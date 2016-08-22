@@ -1,0 +1,9 @@
+*/Debug/*
+Debug/*.exe
+Debug/*.ilk
+Debug/*.pdb
+RemoteSystemsTempFiles/
+**/CEGUI.log
+.metadata/
+/DIMyR.sdf
+/DIMyR.v12.suo
