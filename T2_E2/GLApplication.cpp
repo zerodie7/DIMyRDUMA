@@ -3,7 +3,6 @@
 *  Created on: 20/08/2016
 *      Autor: Diego Martinez
 */
-
 #include "GLApplication.h"
 
 // Shaders
@@ -17,11 +16,15 @@ const GLchar* fragmentShaderSource = "#version 330 core\n"
 "out vec4 color;\n"
 "void main()\n"
 "{\n"
-"color = vec4(0.3f, 0.6f, 0.9f, 1.0f);\n"
+"color = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
 "}\n\0";
 
-GLuint VBO, VAO, EBO;
+GLuint VBO1, VBO2, VAO1, VAO2, EBO;
 GLint vertexShader, fragmentShader, shaderProgram;
+typedef struct {
+	float XYZ[3];
+} Vertices;
+
 
 GLApplication::GLApplication() :
 windowManager(nullptr) {
@@ -38,13 +41,13 @@ void GLApplication::GLMain() {
 
 void GLApplication::initialize() {
 	if (!windowManager
-		|| !windowManager->initialize(800, 700, "Triangles", false)) {
+		|| !windowManager->initialize(800, 700, "T2_E2", false)) {
 		this->destroy();
 		exit(-1);
 	}
 
 	glViewport(0, 0, WindowManager::screenWidth, WindowManager::screenHeight);
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 
 	// Build and compile our shader program
 	// Vertex shader
@@ -84,39 +87,36 @@ void GLApplication::initialize() {
 			<< std::endl;
 	}
 
-	// This is for the render with index element
-	GLfloat vertices[] = {
-		-1.0f, -1.0f, 0.0f,
-		-0.5f, 0.0f, 0.0f,
-		0.0f, -1.0f, 0.0f,
-
-		0.0f, -1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		0.5f, 0.0f, 0.0f,
+	GLfloat vertices1[] = {
+		-0.5f, 0.5f, 0.0f,
+		-1.0f, -0.5f, 0.0f,
+		0.0f, -0.5f, 0.0f
 	};
 
-	GLuint indices[] = {  // Note that we start from 0!
-		0, 1, 2,  // First Triangle
-		2, 0, 3   // Second Triangle
+	GLfloat vertices2[] = {
+		0.0f, -0.5f, 0.0f,
+		1.0f, -0.5f, 0.0f,
+		0.5f, 0.5f, 0.0f
 	};
 
-	glGenVertexArrays(2, &VAO);
-	glGenBuffers(2, &VBO);
-	// This is for the render with index element
-	//glGenBuffers(1, &EBO);
-	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	// This is for the render with index element
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-	//GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
+	glGenVertexArrays(1, &VAO1);
+	glGenBuffers(1, &VBO1);
+	glBindVertexArray(VAO1);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO1);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),(GLvoid*)0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glEnableVertexAttribArray(0);
+	glBindVertexArray(0);
+
+	glGenVertexArrays(1, &VAO2);
+	glGenBuffers(1, &VBO2);
+	glBindVertexArray(VAO2);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),(GLvoid*)0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glEnableVertexAttribArray(0);
 	glBindVertexArray(0);
 }
 
@@ -125,16 +125,18 @@ void GLApplication::applicationLoop() {
 	while (processInput) {
 		processInput = windowManager->processInput(true);
 		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
 
-		// Draw our first triangle
 		glUseProgram(shaderProgram);
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		// This is for the render with index element
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(VAO1);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		
 		glBindVertexArray(0);
 
+		glBindVertexArray(VAO2);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glBindVertexArray(0);
 		windowManager->swapTheBuffers();
 	}
 }
@@ -158,11 +160,12 @@ void GLApplication::destroy() {
 	glDisableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(2, &VBO);
+	glDeleteBuffers(1, &VBO1);
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	// glDeleteBuffers(1, &EBO);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &VBO2);
 
 	glBindVertexArray(0);
-	glDeleteVertexArrays(2, &VAO);
+	glDeleteVertexArrays(1, &VAO1);
+	glDeleteVertexArrays(1, &VAO2);
 }

@@ -38,13 +38,13 @@ void GLApplication::GLMain() {
 
 void GLApplication::initialize() {
 	if (!windowManager
-			|| !windowManager->initialize(800, 700, "Triangles", false)) {
+			|| !windowManager->initialize(800, 700, "T2_E1", false)) {
 		this->destroy();
 		exit(-1);
 	}
 
 	glViewport(0, 0, WindowManager::screenWidth, WindowManager::screenHeight);
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	// Build and compile our shader program
 	// Vertex shader

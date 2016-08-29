@@ -1,173 +1,200 @@
 /*
- * GLApplication.cpp
- *
- *  Created on: 22/08/2016
- *      Author: Diego
- */
+* GLApplication.cpp
+*
+*  Created on: 20/08/2016
+*      Author: Diego Martinez
+*/
 
 #include "GLApplication.h"
-#include <GLFW/glfw3.h>
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+// Shaders
+const GLchar* vertexShaderSource = "#version 330 core\n"
+"layout (location = 0) in vec3 position;\n"
+"void main()\n"
+"{\n"
+"gl_Position = vec4(position.x, position.y, position.z, 1.0);\n"
+"}\0";
+const GLchar* fragmentShaderSource = "#version 330 core\n"
+"out vec4 color;\n"
+"void main()\n"
+"{\n"
+"color = vec4(0.0f, 0.0f, 0.0f, 0.0f);\n"
+"}\n\0";
 
-void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
-void DrawCube(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength);
+GLuint VBO, VAO, ColorBufferId;
+GLint vertexShader, fragmentShader, shaderProgram;
 
-GLfloat rotationX = 0.0f;
-GLfloat rotationY = 0.0f;
-
-int main(void)
-{
-	GLFWwindow *window;
-
-	// Initialize the library
-	if (!glfwInit())
-	{
-		return -1;
-	}
-
-	// Create a windowed mode window and its OpenGL context
-	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hello World", NULL, NULL);
-
-	glfwSetKeyCallback(window, keyCallback);
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
-
-
-	int screenWidth, screenHeight;
-	glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
-
-	if (!window)
-	{
-		glfwTerminate();
-		return -1;
-	}
-
-	// Make the window's context current
-	glfwMakeContextCurrent(window);
-
-	glViewport(0.0f, 0.0f, screenWidth, screenHeight); // specifies the part of the window to which OpenGL will draw (in pixels), convert from normalised to pixels
-	glMatrixMode(GL_PROJECTION); // projection matrix defines the properties of the camera that views the objects in the world coordinate frame. Here you typically set the zoom factor, aspect ratio and the near and far clipping planes
-	glLoadIdentity(); // replace the current matrix with the identity matrix and starts us a fresh because matrix transforms such as glOrpho and glRotate cumulate, basically puts us at (0, 0, 0)
-	glOrtho(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, 0, 1000); // essentially set coordinate system
-	glMatrixMode(GL_MODELVIEW); // (default matrix mode) modelview matrix defines how your objects are transformed (meaning translation, rotation and scaling) in your world
-	glLoadIdentity(); // same as above comment
-
-	GLfloat halfScreenWidth = SCREEN_WIDTH / 2;
-	GLfloat halfScreenHeight = SCREEN_HEIGHT / 2;
-
-
-	// Loop until the user closes the window
-	while (!glfwWindowShouldClose(window))
-	{
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		// Render OpenGL here
-
-		glPushMatrix();
-		glTranslatef(halfScreenWidth, halfScreenHeight, -500);
-		glRotatef(rotationX, 1, 0, 0);
-		glRotatef(rotationY, 0, 1, 0);
-		glTranslatef(-halfScreenWidth, -halfScreenHeight, 500);
-
-		DrawCube(halfScreenWidth, halfScreenHeight, -500, 200);
-
-		glPopMatrix();
-
-
-		// Swap front and back buffers
-		glfwSwapBuffers(window);
-
-		// Poll for and process events
-		glfwPollEvents();
-	}
-
-	glfwTerminate();
-
-	return 0;
+GLApplication::GLApplication() :
+windowManager(nullptr) {
 }
 
-
-
-void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
-{
-	//std::cout << key << std::endl;
-
-	const GLfloat rotationSpeed = 10;
-
-	// actions are GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
-	if (action == GLFW_PRESS || action == GLFW_REPEAT)
-	{
-		switch (key)
-		{
-		case GLFW_KEY_UP:
-			rotationX -= rotationSpeed;
-			break;
-		case GLFW_KEY_DOWN:
-			rotationX += rotationSpeed;
-			break;
-		case GLFW_KEY_RIGHT:
-			rotationY += rotationSpeed;
-			break;
-		case GLFW_KEY_LEFT:
-			rotationY -= rotationSpeed;
-			break;
-		}
-
-
-	}
+GLApplication::~GLApplication() {
+	destroy();
 }
 
+void GLApplication::GLMain() {
+	initialize();
+	applicationLoop();
+}
 
-void DrawCube(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength)
-{
-	GLfloat halfSideLength = edgeLength * 0.5f;
+void GLApplication::initialize() {
+	if (!windowManager
+		|| !windowManager->initialize(800, 700, "T2_E4", false)) {
+		this->destroy();
+		exit(-1);
+	}
 
-	GLfloat vertices[] =
-	{
-		// front face
-		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
-		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top right
-		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom right
-		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
+	glViewport(0, 0, WindowManager::screenWidth, WindowManager::screenHeight);
+	glClearColor(1.0f, 1.0f, 0.0f, 0.0f);
 
-		// back face
-		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top left
-		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
-		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
-		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom left
+	// Build and compile our shader program
+	// Vertex shader
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	glCompileShader(vertexShader);
+	// Check for compile time errors
+	GLint success;
+	GLchar infoLog[512];
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	if (!success) {
+		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog
+			<< std::endl;
+	}
+	// Fragment shader
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	glCompileShader(fragmentShader);
+	// Check for compile time errors
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+	if (!success) {
+		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog
+			<< std::endl;
+	}
+	// Link shaders
+	shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+	// Check for linking errors
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+	if (!success) {
+		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog
+			<< std::endl;
+	}
 
-		// left face
-		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
-		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
-		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
-		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
+	// This is for primitive GL_TRIANGLE_STRIP
+	GLfloat Vertices[] = {
 
-		// right face
-		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
-		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
-		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
-		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
-
-		// top face
-		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
-		centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
-		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // bottom right
-		centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // bottom left
-
-		// top face
-		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // top left
-		centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // top right
-		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
-		centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength  // bottom left
+		//Top
+		1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		//Bott
+		1.0f, -1.0f, 1.0f,
+		-1.0f, -1.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		//Front
+		1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, -1.0f, 1.0f,
+		1.0f, -1.0f, 1.0f,
+		//Back
+		1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f,
+		1.0f, 1.0f, -1.0f,
+		//Left	
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f, 1.0f,
+		//Right
+		1.0f, 1.0f, -1.0f,
+		1.0f, 1.0f, 1.0f,
+		1.0f, -1.0f, 1.0f,
+		1.0f, -1.0f, -1.0f
 	};
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glColor3f( colour[0], colour[1], colour[2] );
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, vertices);
 
-	glDrawArrays(GL_QUADS, 0, 24);
+	GLfloat Colors[] = {
+		1.0f, 0.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 0.0f, 1.0f,
 
-	glDisableClientState(GL_VERTEX_ARRAY);
+		0.0f, 1.0f, 0.0, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f };
+
+	// This is for primitive GL_TRIANGLE_STRIP
+	/*GLfloat Vertices[] = { -0.8f, 0.8f, 0.0f, 1.0f, 0.8f, 0.8f, 0.0f, 1.0f,
+	-0.8f, -0.8f, 0.0f, 1.0f, 0.8f, -0.8f, 0.0f, 1.0f };
+
+	GLfloat Colors[] = { 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f };*/
+
+	glGenVertexArrays(6, &VAO);
+	glBindVertexArray(VAO);
+	glGenBuffers(6, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 36, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	glEnableVertexAttribArray(0);
+
+	glGenBuffers(1, &ColorBufferId);
+	glBindBuffer(GL_ARRAY_BUFFER, ColorBufferId);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Colors), Colors, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	glEnableVertexAttribArray(1);
+}
+
+void GLApplication::applicationLoop() {
+	bool processInput = true;
+	while (processInput) {
+		processInput = windowManager->processInput(true);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+
+		// Draw our first rectagle
+		glUseProgram(shaderProgram);
+		glBindVertexArray(VAO);
+		// This is for primitive GL_TRIANGLE
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		// This is for primitive GL_TRIANGLE_STRIP
+		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBindVertexArray(0);
+
+		windowManager->swapTheBuffers();
+	}
+}
+
+void GLApplication::destroy() {
+	if (windowManager) {
+		delete windowManager;
+		windowManager = nullptr;
+	}
+
+	glUseProgram(0);
+
+	glDetachShader(shaderProgram, vertexShader);
+	glDetachShader(shaderProgram, fragmentShader);
+
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+	glDeleteProgram(shaderProgram);
+
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &ColorBufferId);
+	glDeleteBuffers(1, &VBO);
+
+	glBindVertexArray(0);
+	glDeleteVertexArrays(1, &VAO);
 }
