@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include "InputManager.h"
 #include "TimeManager.h"
 

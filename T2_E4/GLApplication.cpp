@@ -8,18 +8,26 @@
 #include "GLApplication.h"
 
 // Shaders
-const GLchar* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 position;\n"
-"void main()\n"
+const GLchar* vertexShaderSource = { "#version 400\n"
+
+"layout(location=0) in vec4 in_Position;\n"
+"layout(location=1) in vec4 in_Color;\n"
+"out vec4 ex_Color;\n"
+
+"void main(void)\n"
 "{\n"
-"gl_Position = vec4(position.x, position.y, position.z, 1.0);\n"
-"}\0";
-const GLchar* fragmentShaderSource = "#version 330 core\n"
-"out vec4 color;\n"
-"void main()\n"
+"  gl_Position = in_Position;\n"
+"  ex_Color = in_Color;\n"
+"}\n" };
+const GLchar* fragmentShaderSource = { "#version 400\n"
+
+"in vec4 ex_Color;\n"
+"out vec4 out_Color;\n"
+
+"void main(void)\n"
 "{\n"
-"color = vec4(0.0f, 0.0f, 0.0f, 0.0f);\n"
-"}\n\0";
+"  out_Color = ex_Color;\n"
+"}\n" };
 
 GLuint VBO, VAO, ColorBufferId;
 GLint vertexShader, fragmentShader, shaderProgram;
@@ -38,6 +46,7 @@ void GLApplication::GLMain() {
 }
 
 void GLApplication::initialize() {
+	glEnable(GL_DEPTH_TEST);
 	if (!windowManager
 		|| !windowManager->initialize(800, 700, "T2_E4", false)) {
 		this->destroy();
@@ -45,7 +54,7 @@ void GLApplication::initialize() {
 	}
 
 	glViewport(0, 0, WindowManager::screenWidth, WindowManager::screenHeight);
-	glClearColor(1.0f, 1.0f, 0.0f, 0.0f);
+	glClearColor(1.0f, 0.0f, 0.4f, 0.0f);
 
 	// Build and compile our shader program
 	// Vertex shader
@@ -85,64 +94,113 @@ void GLApplication::initialize() {
 			<< std::endl;
 	}
 
-	// This is for primitive GL_TRIANGLE_STRIP
-	GLfloat Vertices[] = {
+	GLfloat Vertices[] = { 
+		-0.5f, -0.5f, 0.5f, 1.0f,
+		0.5f, -0.5f, 0.5f, 1.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 
 
-		//Top
-		1.0f, 1.0f, -1.0f,
-		-1.0f, 1.0f, -1.0f,
-		-1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		//Bott
-		1.0f, -1.0f, 1.0f,
-		-1.0f, -1.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
-		//Front
-		1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f, 1.0f,
-		-1.0f, -1.0f, 1.0f,
-		1.0f, -1.0f, 1.0f,
-		//Back
-		1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, 1.0f, -1.0f,
-		1.0f, 1.0f, -1.0f,
-		//Left	
-		-1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f, -1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f, 1.0f,
-		//Right
-		1.0f, 1.0f, -1.0f,
-		1.0f, 1.0f, 1.0f,
-		1.0f, -1.0f, 1.0f,
-		1.0f, -1.0f, -1.0f
+		-0.5f, -0.5f, 0.5f, 1.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 
+		-0.5f, 0.5f, 0.5f, 1.0f,
+
+		0.5f, -0.5f, 0.5f, 1.0f,
+		0.5f, -0.5f, -0.5f, 1.0f, 
+		0.5f, 0.5f, -0.5f, 1.0f,
+
+		0.5f, -0.5f, 0.5f, 1.0f,
+		0.5f, 0.5f, -0.5f, 1.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 
+
+		-0.5f, -0.5f, -0.5f, 1.0f,
+		0.5f, -0.5f, -0.5f, 1.0f, 
+		0.5f, 0.5f, -0.5f, 1.0f,
+
+		-0.5f, -0.5f, -0.5f, 1.0f,
+		0.5f, 0.5f, -0.5f, 1.0f,
+		-0.5f, 0.5f, -0.5f, 1.0f, 
+
+		-0.5f, -0.5f, -0.5f, 1.0f,
+		-0.5f, -0.5f, 0.5f, 1.0f,
+		-0.5f, 0.5f, 0.5f, 1.0f,
+
+		-0.5f, -0.5f, -0.5f, 1.0f,
+		-0.5f, 0.5f, 0.5f, 1.0f,
+		-0.5f, 0.5f, -0.5f, 1.0f, 
+
+		-0.5f, -0.5f, -0.5f, 1.0f,
+		0.5f, -0.5f, -0.5f, 1.0f, 
+		0.5f, -0.5f, 0.5f, 1.0f,
+
+		-0.5f, -0.5f, -0.5f, 1.0f,
+		0.5f, -0.5f, 0.5f, 1.0f,
+		-0.5f, -0.5f, 0.5f, 1.0f,
+
+		-0.5f, 0.5f, 0.5f, 1.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 
+		0.5f, 0.5f, -0.5f, 1.0f,
+
+		-0.5f, 0.5f, 0.5f, 1.0f,
+		0.5f, 0.5f, -0.5f, 1.0f,
+		-0.5f, 0.5f, -0.5f, 1.0f 
 	};
 
+	GLfloat Colors[] = { 
+		1.0f, 0.0f, 0.0f, 1.0f, 
+		0.0f, 1.0f, 1.0f, 1.0f, 
+		0.0f, 1.0f, 0.0f, 1.0f, 
 
-	GLfloat Colors[] = {
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 0.0f, 1.0f, 
+		0.0f, 1.0f, 0.0f, 1.0f, 
+		0.0f, 1.0f, 1.0f, 1.0f,
 
-		0.0f, 1.0f, 0.0, 1.0f,
+		1.0f, 1.0f, 1.0f, 1.0f, 
+		1.0f, 0.0f, 1.0f, 1.0f, 
+		1.0f, 1.0f, 0.0f, 1.0f,
+
+		1.0f, 1.0f, 1.0f, 1.0f, 
+		1.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f, 
+
+		1.0f, 1.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 1.0f, 1.0f, 
+		1.0f, 1.0f, 0.0f, 1.0f,
+
+		1.0f, 1.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 1.0f, 
+
+		1.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 0.0f, 1.0f, 
+		0.0f, 1.0f, 1.0f, 1.0f,
+
+		1.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 1.0f, 
+
+		1.0f, 1.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 1.0f, 1.0f, 
+		0.0f, 0.0f, 1.0f, 1.0f, 
+
+		1.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f, 1.0f, 
+		0.0f, 0.0f, 0.0f, 1.0f, 
+
+		0.0f, 1.0f, 1.0f, 1.0f,
 		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f };
+		1.0f, 1.0f, 0.0f, 1.0f,
 
-	// This is for primitive GL_TRIANGLE_STRIP
-	/*GLfloat Vertices[] = { -0.8f, 0.8f, 0.0f, 1.0f, 0.8f, 0.8f, 0.0f, 1.0f,
-	-0.8f, -0.8f, 0.0f, 1.0f, 0.8f, -0.8f, 0.0f, 1.0f };
+		0.0f, 1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 1.0f 
+	};
 
-	GLfloat Colors[] = { 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-	0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f };*/
-
-	glGenVertexArrays(6, &VAO);
+	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
-	glGenBuffers(6, &VBO);
+
+	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 36, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
 	glEnableVertexAttribArray(0);
 
 	glGenBuffers(1, &ColorBufferId);
@@ -156,16 +214,14 @@ void GLApplication::applicationLoop() {
 	bool processInput = true;
 	while (processInput) {
 		processInput = windowManager->processInput(true);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-		// Draw our first rectagle
+		// Draw our first triangle
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		// This is for primitive GL_TRIANGLE
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		// This is for primitive GL_TRIANGLE_STRIP
-		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glBindVertexArray(0);
 
 		windowManager->swapTheBuffers();

@@ -3,10 +3,10 @@ using namespace std;
 using namespace chrono;
 
 /**
- * Metodo que calcula el frame rate.
- * @param writeToConsole bandera que indica si se requiere logear a la consola el valor que se obtiene
- * @return FPS
- */
+* Metodo que calcula el frame rate.
+* @param writeToConsole bandera que indica si se requiere logear a la consola el valor que se obtiene
+* @return FPS
+*/
 double TimeManager::CalculateFrameRate(bool writeToConsole = false) {
 	// Variables estaticas que almacenan los incrementos del tiempo
 	static double framesPerSecond = 0.0f; // Se almacenan los frames por segundo
@@ -32,14 +32,14 @@ double TimeManager::CalculateFrameRate(bool writeToConsole = false) {
 		// Here we set the startTime to the currentTime.  This will be used as the starting point for the next second.
 		// This is because GetTime() counts up, so we need to create a delta that subtract the current time from.
 		/*
-		 *
-		 */
+		*
+		*/
 		startTime = CurrentTime;
 
 		// Si la bandera esta habilitada muestra los frames por segundo acutales.
 		if (writeToConsole)
 			fprintf(stderr, "Current Frames Per Second: %d\n",
-					int(framesPerSecond));
+			int(framesPerSecond));
 
 		// Se almacenan los FPS actuales, reiniciamos este en la siguiente linea
 		currentFPS = framesPerSecond;
@@ -53,9 +53,9 @@ double TimeManager::CalculateFrameRate(bool writeToConsole = false) {
 }
 
 /**
- * Metodo que obtien el tiempo actual en milisegundos
- * @return tiempo
- */
+* Metodo que obtien el tiempo actual en milisegundos
+* @return tiempo
+*/
 double TimeManager::GetTime() {
 	// Guarda el tiempo del sistema que ha pasado desde 1/1/1970
 	auto beginningOfTime = system_clock::now().time_since_epoch();
@@ -68,9 +68,9 @@ double TimeManager::GetTime() {
 }
 
 /**
- * Metodo que pausa un cierto tiempo en milisegundo el hilo que se esta ejecutando
- * @param milliseconds tiempo de pausa
- */
+* Metodo que pausa un cierto tiempo en milisegundo el hilo que se esta ejecutando
+* @param milliseconds tiempo de pausa
+*/
 void TimeManager::Sleep(int ms) {
 	// Se pausa el hilo que se esta ejecutando actualmente.
 	this_thread::sleep_for(milliseconds(ms));

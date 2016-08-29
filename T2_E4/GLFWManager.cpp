@@ -1,9 +1,9 @@
 /*
- * GLFWManager.cpp
- *
- *  Created on: 07/08/2016
- *      Author: rey
- */
+* GLFWManager.cpp
+*
+*  Created on: 07/08/2016
+*      Author: rey
+*/
 #include <GL/glew.h>
 #include "GLFWManager.h"
 
@@ -13,7 +13,7 @@ InputManager WindowManager::inputManager;
 double GLFWManager::deltaTime;
 
 GLFWManager::GLFWManager() :
-		window(nullptr) {
+window(nullptr) {
 }
 
 GLFWManager::~GLFWManager() {
@@ -21,7 +21,7 @@ GLFWManager::~GLFWManager() {
 }
 
 bool GLFWManager::initialize(int width, int height, std::string strTitle,
-		bool bFullScreen) {
+	bool bFullScreen) {
 	if (!glfwInit()) {
 		std::cerr << "Failed to initialize GLFW" << std::endl;
 		return false;
@@ -36,15 +36,15 @@ bool GLFWManager::initialize(int width, int height, std::string strTitle,
 
 	if (bFullScreen)
 		window = glfwCreateWindow(width, height, strTitle.c_str(),
-				glfwGetPrimaryMonitor(), nullptr);
+		glfwGetPrimaryMonitor(), nullptr);
 	else
 		window = glfwCreateWindow(width, height, strTitle.c_str(), nullptr,
-				nullptr);
+		nullptr);
 
 	if (window == nullptr) {
 		std::cerr
-				<< "Error to create GLFW window, you can try download the last version of your video card that support OpenGL 3.3+"
-				<< std::endl;
+			<< "Error to create GLFW window, you can try download the last version of your video card that support OpenGL 3.3+"
+			<< std::endl;
 		destroy();
 		return false;
 	}
@@ -89,14 +89,14 @@ void GLFWManager::destroy() {
 }
 
 void GLFWManager::reshapeCallback(GLFWwindow* Window, int widthRes,
-		int heightRes) {
+	int heightRes) {
 	screenWidth = widthRes;
 	screenHeight = heightRes;
 	glViewport(0, 0, widthRes, heightRes);
 }
 
 void GLFWManager::keyCallback(GLFWwindow* window, int key, int scancode,
-		int action, int mode) {
+	int action, int mode) {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		inputManager.keyPressed(InputCodes::kEscape, deltaTime);
 }
@@ -106,7 +106,7 @@ void GLFWManager::mouseCallback(GLFWwindow* window, double xpos, double ypos) {
 }
 
 void GLFWManager::mouseButtonCallback(GLFWwindow* window, int button, int state,
-		int mod) {
+	int mod) {
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && state == GLFW_PRESS)
 		inputManager.mouseClicked(MouseCodes::button_right);
 	else if (button == GLFW_MOUSE_BUTTON_LEFT && state == GLFW_PRESS)
