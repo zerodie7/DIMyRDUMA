@@ -10,6 +10,20 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GLApplication.cpp" />
+    <ClCompile Include="GLFWManager.cpp" />
+    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="TimeManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GLApplication.h" />
+    <ClInclude Include="GLFWManager.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="TimeManager.h" />
+    <ClInclude Include="WindowManager.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{12FF732F-CAB6-4D47-BC85-0ACEABC0C56C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

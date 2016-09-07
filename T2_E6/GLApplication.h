@@ -1,0 +1,34 @@
+#ifndef GLAPPLICATION_H_
+#define GLAPPLICATION_H_
+
+#include <stdlib.h>
+
+#include <GL/glew.h>
+
+#include "WindowManager.h"
+
+class GLApplication {
+public:
+
+	GLApplication();
+	~GLApplication();
+
+	void GLMain();
+	void initialize();
+	void applicationLoop();
+	void destroy();
+
+	void setWindowManager(WindowManager * windowManager) {
+		this->windowManager = windowManager;
+	}
+
+	WindowManager * getWindowManager() {
+		return windowManager;
+	}
+
+protected:
+	WindowManager * windowManager;
+
+};
+
+#endif /* GLAPPLICATION_H_ */
