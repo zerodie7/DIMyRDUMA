@@ -10,6 +10,30 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GLApplication.cpp" />
+    <ClCompile Include="GLFWManager.cpp" />
+    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="TimeManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GLApplication.h" />
+    <ClInclude Include="GLFWManager.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="TimeManager.h" />
+    <ClInclude Include="WindowManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\Premio1.png" />
+    <Image Include="Textures\test.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\texture.fs" />
+    <None Include="Shaders\texture.vs" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8F61DDCD-6B5D-41D7-922F-0E03315450F7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
