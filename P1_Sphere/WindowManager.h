@@ -1,3 +1,10 @@
+/*
+ * WindowManager.h
+ *
+ *  Created on: 07/08/2016
+ *      Author: rey
+ */
+
 #ifndef WINDOWMANAGER_H_
 #define WINDOWMANAGER_H_
 
@@ -5,7 +12,15 @@
 #include <string>
 #include <iostream>
 
-#include "InputManager.h"
+//FPS
+//#include "InputManager.h"
+
+//TPS
+//#include "InputManagerTPS.h"
+
+//OPS
+#include "InputManagerOPS.h"
+
 
 class WindowManager {
 public:
