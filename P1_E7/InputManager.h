@@ -8,7 +8,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "CameraFPS.h"
+#include "CameraTPS.h"
 
 // Standar GLFW for the management of inputs codes keyboards
 enum InputCodes {
@@ -116,11 +116,11 @@ public:
 		return keyState;
 	}
 
-	CameraFPS* getCamera() {
+	CameraTPS* getCamera() {
 		return camera;
 	}
 
-	void setCamera(CameraFPS* camera) {
+	void setCamera(CameraTPS* camera) {
 		this->camera = camera;
 	}
 	void do_movement(float deltaTime);

@@ -21,7 +21,7 @@
     <ClCompile Include="TimeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CameraFPS.h" />
+    <ClInclude Include="CameraTPS.h" />
     <ClInclude Include="definition.h" />
     <ClInclude Include="GLApplication.h" />
     <ClInclude Include="GLFWManager.h" />
@@ -44,9 +44,9 @@
     <Image Include="Textures\test.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{28D61614-9ADE-4B42-9E23-55688CB1D17C}</ProjectGuid>
+    <ProjectGuid>{8C600954-250D-4263-BF07-BFD9CA40DC2A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>P1_E6</RootNamespace>
+    <RootNamespace>P1_E7</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

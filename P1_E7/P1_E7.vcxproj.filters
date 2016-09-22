@@ -33,14 +33,17 @@
     <ClCompile Include="Sphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TimeManager.cpp">
+    <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
+    <ClCompile Include="TimeManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraTPS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="definition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -65,9 +68,6 @@
     <ClInclude Include="WindowManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CameraFPS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\Color.fs">
@@ -76,16 +76,16 @@
     <None Include="Shaders\Color.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\sistemascoordenados.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\sistemascoordenados.vs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Shaders\Esfera.fs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Shaders\Esfera.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\sistemascoordenados.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\sistemascoordenados.vs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

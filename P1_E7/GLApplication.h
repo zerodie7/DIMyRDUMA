@@ -15,7 +15,7 @@
 #include "WindowManager.h"
 #include "Sphere.h"
 #include "Shader.h"
-#include "CameraFPS.h"
+#include "CameraTPS.h"
 #include "TimeManager.h"
 #include "Texture.h"
 
@@ -38,17 +38,17 @@ public:
 		return windowManager;
 	}
 
-	CameraFPS* getCamera() {
+	CameraTPS* getCamera() {
 		return camera;
 	}
 
-	void setCamera(CameraFPS* camera) {
+	void setCamera(CameraTPS* camera) {
 		this->camera = camera;
 	}
 
 protected:
 	WindowManager * windowManager;
-	CameraFPS * camera;
+	CameraTPS * camera;
 
 };
 
