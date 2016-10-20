@@ -83,13 +83,10 @@ void Sphere::load() {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
-
 	glBindVertexArray(VAO);
-
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 	size_t stride;
-
 	size_t offset1 = 0;
 	size_t offset2 = 0;
 	size_t offset3 = 0;
@@ -120,35 +117,29 @@ void Sphere::load() {
 	}
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint),
-			index.data(),
-			GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
 
 	// First attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (GLvoid*) offset1);
 	glEnableVertexAttribArray(0);
+
 	// Second attribute
 	if (mode == MODEL_MODE::VERTEX_LIGHT_TEXTURE)
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride,
-				(GLvoid*) offset2);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (GLvoid*) offset2);
 	else
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride,
-				(GLvoid*) offset2);
-	glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (GLvoid*) offset2);
+	    glEnableVertexAttribArray(1);
+
 	// Thrid attribute
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, (GLvoid*) offset3);
 	glEnableVertexAttribArray(2);
-
 	glBindVertexArray(0); // Unbind VAO
 
 }
 
 void Sphere::render() {
-
 	glBindVertexArray(VAO);
-	glDrawElements( GL_TRIANGLES, index.size(), GL_UNSIGNED_INT,
-			(GLvoid*) (sizeof(GLuint) * 0));
+	glDrawElements( GL_TRIANGLES, index.size(), GL_UNSIGNED_INT, (GLvoid*) (sizeof(GLuint) * 0));
 	glBindVertexArray(0);
-
 }
 

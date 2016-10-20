@@ -30,6 +30,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="MovePerson.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sphere.h" />
@@ -44,10 +45,12 @@
     <None Include="Shaders\lightingSpecularMap.vs" />
     <None Include="Shaders\shader.fs" />
     <None Include="Shaders\shader.vs" />
+    <None Include="Shaders\sistemascoordenados.fs" />
+    <None Include="Shaders\sistemascoordenados.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Textures\container2.png" />
-    <Image Include="Textures\container2_specular.png" />
+    <Image Include="Textures\SUN.jpg" />
+    <Image Include="Textures\SUN_SPECULAR.jpg" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{341BFECC-6E94-47A7-AC2E-7C392098D7DE}</ProjectGuid>

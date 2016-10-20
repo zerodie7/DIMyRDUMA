@@ -31,6 +31,9 @@ public:
 	static void mouseCallback(GLFWwindow* window, double xpos, double ypos);
 	static void mouseButtonCallback(GLFWwindow* window, int button, int state,
 			int mod);
+//TPS
+	static void mouseScrollCallback(GLFWwindow* window, double xoffset,
+		double yoffset);
 
 	static double deltaTime;
 

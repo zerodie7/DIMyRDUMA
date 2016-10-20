@@ -1,9 +1,3 @@
-/*
- * CameraFPS.h
- *
- *  Created on: 06/09/2016
- *      Author: rey
- */
 #pragma once
 
 // Std. Includes
@@ -14,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-enum Character_Movement {
+enum Person_Movement {
 	C_FORWARD, C_BACKWARD, C_LEFT, C_RIGHT
 };
 
@@ -25,7 +19,7 @@ const float SPEED = 3.0f;
 const float SENSITIVTY = 0.25f;
 const float ZOOM = 45.0f;
 
-class CameraFPS {
+class Person_move {
 public:
 	// Camera Attributes
 	glm::vec3 Position;
@@ -33,43 +27,41 @@ public:
 	glm::vec3 Up;
 	glm::vec3 Right;
 	glm::vec3 WorldUp;
+
 	// Eular Angles
 	float Yaw;
 	float Pitch;
+
 	// Camera options
 	float MovementSpeed;
 	float MouseSensitivity;
 	float Zoom;
 
 	// Constructor with vectors
-	CameraFPS(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up =
-			glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) :
-			Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(
-					SENSITIVTY), Zoom(ZOOM) {
+	Person_move(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) :
+		Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVTY), Zoom(ZOOM) {
 		this->Position = position;
 		this->WorldUp = up;
 		this->Yaw = yaw;
 		this->Pitch = pitch;
-		//this->updateCameraVectors();
+		this->updateCameraVectors();
 	}
+
 	// Constructor with scalar values
-	CameraFPS(float posX, float posY, float posZ, float upX, float upY,
-			float upZ, float yaw, float pitch) :
-			Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(
-					SENSITIVTY), Zoom(ZOOM) {
+	Person_move(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) :
+		Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVTY), Zoom(ZOOM) {
 		this->Position = glm::vec3(posX, posY, posZ);
 		this->WorldUp = glm::vec3(upX, upY, upZ);
 		this->Yaw = yaw;
 		this->Pitch = pitch;
-		//this->updateCameraVectors();
+		this->updateCameraVectors();
 	}
 
 	glm::mat4 GetViewMatrix() {
-		return glm::lookAt(this->Position, this->Position + this->Front,
-				this->Up);
+		return glm::lookAt(this->Position, this->Position + this->Front, this->Up);
 	}
 
-	void ProcessKeyboard(Character_Movement direction, float deltaTime) {
+	void ProcessKeyboard(Person_Movement direction, float deltaTime) {
 		float velocity = this->MovementSpeed * deltaTime;
 		if (direction == C_FORWARD)
 			this->Position += this->Front * velocity;
@@ -80,9 +72,8 @@ public:
 		if (direction == C_RIGHT)
 			this->Position += this->Right * velocity;
 	}
-	/*
-	void ProcessMouseMovement(float xoffset, float yoffset,
-			GLboolean constrainPitch = true) {
+
+	void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true) {
 		xoffset *= this->MouseSensitivity;
 		yoffset *= this->MouseSensitivity;
 
@@ -95,7 +86,6 @@ public:
 			if (this->Pitch < -89.0f)
 				this->Pitch = -89.0f;
 		}
-
 		this->updateCameraVectors();
 	}
 
@@ -109,5 +99,4 @@ private:
 		this->Right = glm::normalize(glm::cross(this->Front, this->WorldUp));
 		this->Up = glm::normalize(glm::cross(this->Right, this->Front));
 	}
-	*/
 };

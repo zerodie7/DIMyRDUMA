@@ -7,10 +7,8 @@
 
 #include "Mesh.h"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices,
-		std::vector<Texture> textures) :
-		vertices(vertices), indices(indices), textures(textures), VAO(0), VBO(
-				0), EBO(0) {
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures) :
+		vertices(vertices), indices(indices), textures(textures), VAO(0), VBO(0), EBO(0) {
 	this->loadMesh();
 }
 
@@ -75,13 +73,11 @@ void Mesh::loadMesh() {
 
 	glBindVertexArray(this->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-	// Load the data of mesh in the GPU
-	glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex),
-			&this->vertices[0], GL_STATIC_DRAW);
 
+	// Load the data of mesh in the GPU
+	glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex), &this->vertices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(GLuint),
-			&this->indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(GLuint), &this->indices[0], GL_STATIC_DRAW);
 
 	// Set the vertex attribute pointers
 
@@ -95,9 +91,7 @@ void Mesh::loadMesh() {
 
 	// Vertex Texture Coords
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-			(GLvoid*) offsetof(Vertex, TexCoords));
-
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, TexCoords));
 	glBindVertexArray(0);
 }
 

@@ -86,6 +86,9 @@
     <ClInclude Include="WindowManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MovePerson.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\lampShader.fs">
@@ -106,12 +109,18 @@
     <None Include="Shaders\shader.vs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Shaders\sistemascoordenados.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\sistemascoordenados.fs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Textures\container2.png">
+    <Image Include="Textures\SUN.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Textures\container2_specular.png">
+    <Image Include="Textures\SUN_SPECULAR.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

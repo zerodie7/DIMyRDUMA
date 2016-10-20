@@ -8,8 +8,7 @@
 #include "Texture.h"
 #include <iostream>
 
-Texture::Texture(GLenum TextureTarget, const std::string& FileName) :
-		m_textureObj(0), type("") {
+Texture::Texture(GLenum TextureTarget, const std::string& FileName) : m_textureObj(0), type("") {
 	this->m_textureTarget = TextureTarget;
 	this->m_fileName = FileName;
 }

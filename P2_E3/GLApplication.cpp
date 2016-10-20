@@ -7,19 +7,20 @@
 
 #include "GLApplication.h"
 
-Shader shader;
-
 GLuint VAO, VBO, EBO;
-
-Sphere sp(1.5, 50, 50, MODEL_MODE::VERTEX_COLOR);
+Sphere sp(1.5, 50, 50, MODEL_MODE::VERTEX_LIGHT_TEXTURE);
 Sphere sp2(1.5, 50, 50, MODEL_MODE::VERTEX_LIGHT_TEXTURE);
 Shader lightingShader;
 Shader lampShader;
-Texture textureDifuse(GL_TEXTURE_2D, "Textures/container2.png");
-Texture textureSpecular(GL_TEXTURE_2D, "Textures/container2_specular.png");
+Shader shader;
+Shader sistemascoordenados;
+Texture textureDifuse(GL_TEXTURE_2D, "Textures/SUN.jpg");
+Texture textureSpecular(GL_TEXTURE_2D, "Textures/SUN_SPECULAR.JPG");
 
-
-
+struct VertexTexture {
+	glm::vec3 m_Pos;
+	glm::vec2 m_TexCoord;
+};
 
 GLApplication::GLApplication() :
 		windowManager(nullptr), camera(nullptr) {
@@ -35,8 +36,7 @@ void GLApplication::GLMain() {
 }
 
 void GLApplication::initialize() {
-	if (!windowManager
-			|| !windowManager->initialize(800, 700, "Window GLFW", false)) {
+	if (!windowManager || !windowManager->initialize(800, 700, "Window GLFW", false)) {
 		this->destroy();
 		exit(-1);
 	}
@@ -56,37 +56,49 @@ void GLApplication::initialize() {
 	textureDifuse.load();
 	textureSpecular.load();
 
+	sistemascoordenados.initialize("Shaders/sistemascoordenados.vs", "Shaders/sistemascoordenados.fs");
 	shader.initialize("Shaders/shader.vs", "Shaders/shader.fs");
 	lightingShader.initialize("Shaders/lightingSpecularMap.vs","Shaders/lightingSpecularMap.fs");
 	lampShader.initialize("Shaders/lampShader.vs", "Shaders/lampShader.fs");
 
 
 }
+
 void GLApplication::applicationLoop() {
 	bool processInput = true;
-
-	glm::vec3 lightPos( 1.0f, -2.5f, 1.0f);
+	glm::vec3 lightPos( -2.0f, -2.0f, -2.0f);
 	Model objModel("objects/green_arrow/Green_Arrow_A.obj");
 	Model objModel1("objects/flash/Flash.obj");
 	Model objModel2("objects/death/Deathstroke.obj");
 
 	double lastTime = TimeManager::Instance().GetTime();
-
 	while (processInput) {
 		processInput = windowManager->processInput(true);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+
+
 		//Rotar esfera de luz
 		GLfloat timeValue = TimeManager::Instance().GetTime() - lastTime;
 		GLfloat valX = sin((GLfloat)timeValue * 1.0f) * 3.0f;
+		GLfloat valY = sin((GLfloat)timeValue * 3.1416f/2) * 6.0f;
 		GLfloat valZ = cos((GLfloat)timeValue * 1.0f) * 3.0f;
 		lightPos.x = valX;
+		lightPos.y = valY;
 		lightPos.z = valZ;
 
 
+		//dibujar la esfera
+		lightingShader.turnOn();
+		GLint viewPosLoc = lightingShader.getUniformLocation("viewPos");
+		glUniform3f(viewPosLoc, lightPos.x, lightPos.y, lightPos.z);
+
 		// Transformation matrices
-		glm::mat4 view = camera->GetViewMatrix();
+		glm::vec3 cameraPos = windowManager->inputManager.getCameraPos();
+		glm::vec3 cameraLookAt = windowManager->inputManager.getCameraPos() + windowManager->inputManager.getCameraDirection();
+		glm::mat4 view = glm::lookAt(cameraPos, cameraLookAt, glm::vec3(0, 0.5, 0.0));
+		//glm::mat4 view = camera->GetViewMatrix();
 		glm::mat4 projection;
 		projection = glm::perspective(45.0f, (GLfloat)WindowManager::screenWidth / (GLfloat)WindowManager::screenHeight, 0.1f, 100.0f);
 
@@ -95,7 +107,7 @@ void GLApplication::applicationLoop() {
 		GLint modelLoc = lightingShader.getUniformLocation("model");
 		GLint viewLoc = lightingShader.getUniformLocation("view");
 		GLint projLoc = lightingShader.getUniformLocation("projection");
-
+		
 		// Pass the matrices to the shader
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
@@ -117,11 +129,21 @@ void GLApplication::applicationLoop() {
 		glUniform3f(lightDiffuseLoc, 0.9f, 0.9f, 0.9f);
 		glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
 		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
-
 		//Fin codigo luz
 
-		//Inicio codigo de modelos
+		// Draw a sphere sol
+		glm::mat4 model0;
+		model0 = glm::translate(model0, lightPos);
+		model0 = glm::scale(model0, glm::vec3(0.6, 0.6, 0.6));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model0));
+		textureDifuse.bind(GL_TEXTURE0);
+		textureSpecular.bind(GL_TEXTURE1);
+		sp2.render();
+		lightingShader.turnOff();
+		//acabar con la esfera sol
 
+
+		//Inicio codigo de modelos
 		shader.turnOn();
 
 		// Get the uniform locations
@@ -157,23 +179,20 @@ void GLApplication::applicationLoop() {
 		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
 		objModel.render(&shader);
 
-		// Draw the loaded model
+		// Draw the loaded model1
 		glm::mat4 model1;
 		model1 = glm::translate(model1, glm::vec3(0.75f, -1.75f, 0.0f));
 		model1 = glm::scale(model1, glm::vec3(0.2f, 0.2f, 0.2f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model1));
-
 		objModel1.render(&shader);
 
-		// Draw the loaded model
+		// Draw the loaded model2
 		glm::mat4 model2;
 		model2 = glm::translate(model2, glm::vec3(-0.75f, -1.75f, 0.0f));
 		model2 = glm::scale(model2, glm::vec3(0.2f, 0.2f, 0.2f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
-
 		objModel2.render(&shader);
 
 		shader.turnOff();
@@ -186,14 +205,15 @@ void GLApplication::applicationLoop() {
 		modelLoc = lampShader.getUniformLocation("model");
 		viewLoc = lampShader.getUniformLocation("view");
 		projLoc = lampShader.getUniformLocation("projection");
+
 		// Pass the matrices to the shader
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-		model = glm::scale(glm::mat4(), glm::vec3(0.5, 0.5, 0.5));
-		model = glm::translate(model, lightPos);
-		model = glm::scale(model, glm::vec3(0.4, 0.4, 0.4));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		model0 = glm::scale(model0, glm::vec3(0.1, 0.1, 0.1));
+		model0 = glm::translate(model0, lightPos);
+		//model = glm::scale(model, glm::vec3(0.4, 0.4, 0.4));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model0));
 		sp.render();
 		lampShader.turnOff();
 	
